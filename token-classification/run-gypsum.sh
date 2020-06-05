@@ -1,15 +1,16 @@
 #!/bin/bash
 #
 #SBATCH --job-name=ner
-#SBATCH --output=logsner/ner_%j.txt  # output file
-#SBATCH -e logsner/ner_%j.err        # File to which STDERR will be written
+#SBATCH --output=logsner/ner.txt  # output file
+#SBATCH -e logsner/ner.err        # File to which STDERR will be written
 #SBATCH --gres=gpu:1
 #SBATCH --partition=2080ti-long # Partition to submit to
-#SBATCH --mem=40G
+#SBATCH --mem=40GB
 #
 #SBATCH --ntasks=1
 
-
+export MAX_LENGTH=128
+export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/models/bert-large-cased'
 
 export OUTPUT_DIR=germeval-model
 export BATCH_SIZE=32
