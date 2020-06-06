@@ -12,7 +12,7 @@
 export MAX_LENGTH=128
 export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/models/bert-large-cased'
 
-export OUTPUT_DIR=germeval-model
+export OUTPUT_DIR='/mnt/nfs/work1/696ds-s20/abajaj/instabase/models/germeval-model'
 export BATCH_SIZE=32
 export NUM_EPOCHS=3
 export SAVE_STEPS=750

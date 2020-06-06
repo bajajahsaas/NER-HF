@@ -10,10 +10,12 @@
 #SBATCH --ntasks=1
 
 export SQUAD_DIR=data/SQUAD1.0/
+export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/models/bert-base-uncased'
+export OUTPUT_DIR='/mnt/nfs/work1/696ds-s20/abajaj/instabase/models/qa-squad1.0'
 
 python run_squad.py \
   --model_type bert \
-  --model_name_or_path bert-base-uncased \
+  --model_name_or_path $BERT_MODEL \
   --do_train \
   --do_eval \
   --do_lower_case \
@@ -24,4 +26,4 @@ python run_squad.py \
   --num_train_epochs 2.0 \
   --max_seq_length 384 \
   --doc_stride 128 \
-  --output_dir /tmp/debug_squad/
+  --output_dir $OUTPUT_DIR
