@@ -130,4 +130,6 @@ dmypy.json
 
 token-classification/*.txt
 token-classification/*.tmp
-question-answering/data/*
+question-answering/data/
+question-answering/logsqa/
+
