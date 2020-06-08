@@ -9,7 +9,7 @@
 #
 #SBATCH --ntasks=1
 
-export SQUAD_DIR=data/SQUAD1.0/
+export SQUAD_DIR='/mnt/nfs/work1/696ds-s20/abajaj/instabase/data/SQUAD1.0'
 export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/models/bert-base-uncased'
 export OUTPUT_DIR='/mnt/nfs/work1/696ds-s20/abajaj/instabase/models/qa-squad1.0'
 
