@@ -6,3 +6,4 @@ question-answering/logsqa/
 token-classification/germeval-model/
 question-answering/qa-squad1.0/
 */*.ipynb
+/question-answering/*.json

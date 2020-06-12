@@ -702,6 +702,8 @@ def main():
         args.n_gpu = 1
     args.device = device
 
+    logger.info("Device: %s", args.device)
+    
     # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
