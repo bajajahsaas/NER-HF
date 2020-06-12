@@ -276,7 +276,7 @@ print('Saving scores to: ', outFile)
 
 headings = ['context', 'predicted', 'label']
 df = pd.DataFrame(columns=headings)
-for ids, pred, label, dataTypeId, fileId, context_id in csv_output:
+for ids, pred, label in csv_output:
     ids = np.trim_zeros(ids.cpu().numpy())
     sentence = tokenizer.convert_ids_to_tokens(ids)[1:-1]
     # data = [{'a': 1, 'b': 2}, {'a': 5, 'b': 10, 'c': 20}]
