@@ -200,17 +200,14 @@ save_plots_models(outDir, train_loss_set, train_acc_set, val_acc_set, model.stat
 
 
 # testing
-input_ids, labels, attention_masks, dataTypeId, fileId, context_id = readData(tokenizer, args, mode="test")
+input_ids, labels, attention_masks = readData(tokenizer, args, mode="test")
 
 prediction_inputs = torch.tensor(input_ids)
 prediction_masks = torch.tensor(attention_masks)
 prediction_labels = torch.tensor(labels)
-prediction_dataTypeId = torch.tensor(dataTypeId)
-prediction_fileId = torch.tensor(fileId)
-prediction_context_id = torch.tensor(context_id)
 
 batch_size = 32
-prediction_data = TensorDataset(prediction_inputs, prediction_masks, prediction_labels, prediction_dataTypeId, prediction_fileId, prediction_context_id)
+prediction_data = TensorDataset(prediction_inputs, prediction_masks, prediction_labels)
 prediction_sampler = SequentialSampler(prediction_data)
 prediction_dataloader = DataLoader(prediction_data, sampler=prediction_sampler, batch_size=batch_size)
 
@@ -227,7 +224,7 @@ for batch in prediction_dataloader:
     # Add batch to GPU
     batch = tuple(t.to(device) for t in batch)
     # Unpack the inputs from our dataloader
-    b_input_ids, b_input_mask, b_labels, b_dataTypeId, b_fileId, b_context_id = batch
+    b_input_ids, b_input_mask, b_labels = batch
     # Telling the model not to compute or store gradients, saving memory and speeding up prediction
     with torch.no_grad():
         # Forward pass, calculate logit predictions
@@ -249,7 +246,7 @@ for batch in prediction_dataloader:
     count = 0
     for i in range(pred_flat.shape[0]):
         # iterate over the batch
-        csv_output.append((b_input_ids[i], pred_flat[i], labels_flat[i], b_dataTypeId[i], b_fileId[i], b_context_id[i]))
+        csv_output.append((b_input_ids[i], pred_flat[i], labels_flat[i]))
 
 print('Test Accuracy Accuracy: {0:0.4f}'.format((float(eval_accuracy) / float(nb_eval_steps))))
 
@@ -270,22 +267,18 @@ file = open(outFile, 'w')
 print('Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(recall, precision, f1), file=file)
 print('Saving scores to: ', outFile)
 
-# headings = ['context', 'predicted', 'label', 'dataTypeId', 'fileId', 'context_id']
-# df = pd.DataFrame(columns=headings)
-# for ids, pred, label, dataTypeId, fileId, context_id in csv_output:
-#     ids = np.trim_zeros(ids.cpu().numpy())
-#     sentence = tokenizer.convert_ids_to_tokens(ids)[1:-1]
-#     dataTypeId = dataTypeId.cpu().numpy()
-#     fileId = fileId.cpu().numpy()
-#     context_id = context_id.cpu().numpy()
-#     # data = [{'a': 1, 'b': 2}, {'a': 5, 'b': 10, 'c': 20}]
-#     data = [{'context': ' '.join(sentence), 'predicted': str(pred), 'label': str(label), 'dataTypeId': str(dataTypeId),
-#              'fileId': str(fileId), 'context_id': str(context_id)}]
-#     df = df.append(pd.DataFrame(data, columns=headings))
+headings = ['context', 'predicted', 'label']
+df = pd.DataFrame(columns=headings)
+for ids, pred, label, dataTypeId, fileId, context_id in csv_output:
+    ids = np.trim_zeros(ids.cpu().numpy())
+    sentence = tokenizer.convert_ids_to_tokens(ids)[1:-1]
+    # data = [{'a': 1, 'b': 2}, {'a': 5, 'b': 10, 'c': 20}]
+    data = [{'context': ' '.join(sentence), 'predicted': str(pred), 'label': str(label)}]
+    df = df.append(pd.DataFrame(data, columns=headings))
 
 
-# outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.csv'
-# df.to_csv(outFile, index=False)
-# print('Saving output file to: ', outFile)
+outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.csv'
+df.to_csv(outFile, index=False)
+print('Saving output file to: ', outFile)
 
 print('Process Completed')

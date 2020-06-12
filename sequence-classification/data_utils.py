@@ -56,18 +56,7 @@ def readData(tokenizer, args, mode):
 		print('Tokenized texts Length: ', len(tokenized_texts))
 		assert (len(labels) == len(tokenized_texts))
 
-	if mode is "test":
-		# other fields required to generate output of extractive step
-		dataTypeId = df.dataTypeId.values
-		fileId = df.fileId.values
-		context_id = df.context_id.values
-		assert (len(dataTypeId) == len(fileId))
-		assert (len(fileId) == len(context_id))
-
-		return input_ids, labels, attention_masks, dataTypeId, fileId, context_id
-
-	else:
-		return input_ids, labels, attention_masks
+	return input_ids, labels, attention_masks
 
 
 def flat_accuracy(preds, labels):
