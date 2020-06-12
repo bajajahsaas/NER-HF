@@ -254,17 +254,24 @@ flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 flat_true_labels = [item for sublist in true_labels for item in sublist]
 
-precision = precision_score(flat_true_labels, flat_predictions)
-recall = recall_score(flat_true_labels, flat_predictions)
-f1 = f1_score(flat_true_labels, flat_predictions)
-print('Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(recall, precision, f1))
+micro_precision = precision_score(flat_true_labels, flat_predictions, average="micro")
+micro_recall = recall_score(flat_true_labels, flat_predictions, average="micro")
+micro_f1 = f1_score(flat_true_labels, flat_predictions, average="micro")
+print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
+
+macro_precision = precision_score(flat_true_labels, flat_predictions, average="macro")
+macro_recall = recall_score(flat_true_labels, flat_predictions, average="macro")
+macro_f1 = f1_score(flat_true_labels, flat_predictions, average="macro")
+print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1))
 
 testFile = args.testFile.split('/')
 testFile = testFile[len(testFile) - 1]  # take the last part
 
 outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.txt'
 file = open(outFile, 'w')
-print('Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(recall, precision, f1), file=file)
+print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1), file=file)
+print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1), file=file)
+
 print('Saving scores to: ', outFile)
 
 headings = ['context', 'predicted', 'label']
