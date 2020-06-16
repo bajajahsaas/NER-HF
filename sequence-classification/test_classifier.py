@@ -38,17 +38,18 @@ if os.path.exists(outDir):
 else:
     os.makedirs(outDir)
 
-model_state_dict = torch.load(modelPath)
-model = BertForSequenceClassification.from_pretrained(args.model_name_or_path, state_dict=model_state_dict, num_labels=4)
-print("Fine-tuned model loaded with labels = ", model.num_labels)
-
-model.cuda()
-model.eval()
-
-tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path, do_lower_case=True)
 
 device = torch.device("cuda" if (args.gpu and torch.cuda.is_available()) else "cpu")
 print('Device', device)
+
+model_state_dict = torch.load(modelPath, map_location=device)
+model = BertForSequenceClassification.from_pretrained(args.model_name_or_path, state_dict=model_state_dict, num_labels=4)
+print("Fine-tuned model loaded with labels = ", model.num_labels)
+
+model = model.to(device)
+model.eval()
+
+tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path, do_lower_case=True)
 
 # testing
 input_ids, labels, attention_masks = readData(tokenizer, args, mode="test")

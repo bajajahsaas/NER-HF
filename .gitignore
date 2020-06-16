@@ -8,3 +8,4 @@ question-answering/qa-squad1.0/
 */*.ipynb
 /question-answering/*.json
 /token-classification/WNUT-17/
+/sequence-classification/w2/

@@ -15,7 +15,11 @@ export RANDOM_SEQ_LEN=3
 
 export MODEL=./${DATASET}/${RANDOM_SEQ_LEN}/model.pt
 export BERT=bert-large-cased
-export TEST=./data/${DATASET}-classifier-data${RANDOM_SEQ_LEN}-test.csv
-export OUT_DIR=./${DATASET}/${RANDOM_SEQ_LEN}/inference  # always make new directory, since code empties OUT_DIR and then writes
+
+#export TEST=./data/${DATASET}-classifier-data${RANDOM_SEQ_LEN}-test.csv
+#export OUT_DIR=./${DATASET}/${RANDOM_SEQ_LEN}/inference  # always make new directory, since code empties OUT_DIR and then writes
+
+export TEST=./data/w2-classifier-instabase-test.csv
+export OUT_DIR=./${DATASET}/${RANDOM_SEQ_LEN}/instabase-inference  # always make new directory, since code empties OUT_DIR and then writes
 
 python -u test_classifier.py --modelFile=${MODEL} --testFile=${TEST} --outputDir=${OUT_DIR} --model_name_or_path=${BERT} --gpu
