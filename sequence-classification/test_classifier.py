@@ -126,14 +126,21 @@ print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, m
 
 print('Saving scores to: ', outFile)
 
+testdf = pd.read_csv(args.testFile)
+sentences = testdf['context'].tolist()  # un-tokenized sentences
+
+assert (len(sentences) == len(csv_output))
+
 headings = ['context', 'predicted', 'label']
 df = pd.DataFrame(columns=headings)
+index = 0
 for ids, pred, label in csv_output:
     ids = np.trim_zeros(ids.cpu().numpy())
     sentence = tokenizer.convert_ids_to_tokens(ids)[1:-1]
     # data = [{'a': 1, 'b': 2}, {'a': 5, 'b': 10, 'c': 20}]
-    data = [{'context': ' '.join(sentence), 'predicted': str(pred), 'label': str(label)}]
+    data = [{'context': sentences[index], 'predicted': str(pred), 'label': str(label)}]
     df = df.append(pd.DataFrame(data, columns=headings))
+    index += 1
 
 
 outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.csv'
