@@ -9,3 +9,4 @@ question-answering/qa-squad1.0/
 /question-answering/*.json
 /token-classification/WNUT-17/
 /sequence-classification/w2/
+/sequence-classification/instabase-data/
