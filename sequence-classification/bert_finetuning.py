@@ -26,6 +26,8 @@ if __name__ == "__main__":
                         help='Folder path to write output to')
     parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
                         help="Path to pre-trained model or shortcut name")
+    parser.add_argument("--num_labels", default=None, type=int, required=True,
+                        help="Number of labels in classification")
     args = parser.parse_args()
 
 outDir = args.outputDir
@@ -46,7 +48,7 @@ device = torch.device("cuda" if (args.gpu and torch.cuda.is_available()) else "c
 print('Device', device)
 n_gpu = torch.cuda.device_count()
 
-model = BertForSequenceClassification.from_pretrained(args.model_name_or_path, num_labels=4)
+model = BertForSequenceClassification.from_pretrained(args.model_name_or_path, num_labels=args.num_labels)
 tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path, do_lower_case=True)
 
 model.cuda()
