@@ -16,8 +16,8 @@ export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/mode
 export MODE=all # all, no-address
 export NUM_LABELS=4 # 4, 3
 
-export TRAIN=./data/${MODE}/${DATASET}-classifier-data${RANDOM_SEQ_LEN}-train.csv
-export TEST=./data/${MODE}/${DATASET}-classifier-data${RANDOM_SEQ_LEN}-test.csv
+export TRAIN=./data/${MODE}/${DATASET}-classifier-data-train${RANDOM_SEQ_LEN}.csv
+export TEST=./data/${MODE}/${DATASET}-classifier-data-test${RANDOM_SEQ_LEN}.csv
 
 export OUT_DIR=./${DATASET}/${MODE}/${RANDOM_SEQ_LEN}
 
