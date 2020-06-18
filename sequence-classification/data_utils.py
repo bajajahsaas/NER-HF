@@ -16,7 +16,7 @@ def readData(tokenizer, args, mode):
 	print("Reading {0} file in {1} mode".format(file, mode))
 
 	df = pd.read_csv(file)
-
+	df['context'] = df['context'].astype(str)
 	'''
 	# only for debugging
 
