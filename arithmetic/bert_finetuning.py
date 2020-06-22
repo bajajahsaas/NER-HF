@@ -107,7 +107,7 @@ train_acc_set = []
 val_acc_set = []
 
 # Number of training epochs (authors recommend between 2 and 4)
-epochs = 4
+epochs = 100
 
 # trange is a tqdm wrapper around the normal python range
 for epoch in trange(epochs, desc="Epoch"):
@@ -152,6 +152,8 @@ for epoch in trange(epochs, desc="Epoch"):
 
         if step % 100 == 0:
             print('Training for {0} step'.format(step + 1))
+            train_loss_set.append(tr_loss * 1.0 / nb_tr_steps)
+            train_acc_set.append(train_accuracy * 1.0 / nb_tr_steps)
 
     print('Total tr steps: {0}, total tr examples: {1}'.format(nb_tr_steps, nb_tr_examples))
     print("Train loss: {0:0.4f}".format(tr_loss / nb_tr_steps))
@@ -194,8 +196,8 @@ for epoch in trange(epochs, desc="Epoch"):
     print("Validation Accuracy: {0:0.4f}".format(eval_accuracy / nb_eval_steps))
     val_acc_set.append(eval_accuracy * 1.0 / nb_eval_steps)
 
-    # if (epoch + 1) % 10 == 0:
-    #     save_plots_models(outDir, train_loss_set, train_acc_set, val_acc_set, model.state_dict(), epoch, epochs)
+    if (epoch + 1) % 10 == 0:
+        save_plots_models(outDir, train_loss_set, train_acc_set, val_acc_set, model.state_dict(), epoch, epochs)
 
 # dump final plots and models
 save_plots_models(outDir, train_loss_set, train_acc_set, val_acc_set, model.state_dict(), epochs, epochs)
@@ -256,15 +258,12 @@ flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 flat_true_labels = [item for sublist in true_labels for item in sublist]
 
-micro_precision = precision_score(flat_true_labels, flat_predictions, average="micro")
-micro_recall = recall_score(flat_true_labels, flat_predictions, average="micro")
-micro_f1 = f1_score(flat_true_labels, flat_predictions, average="micro")
-print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
+labels = [x for x in range(args.num_labels)]
 
-macro_precision = precision_score(flat_true_labels, flat_predictions, average="macro")
-macro_recall = recall_score(flat_true_labels, flat_predictions, average="macro")
-macro_f1 = f1_score(flat_true_labels, flat_predictions, average="macro")
-print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1))
+micro_precision = precision_score(flat_true_labels, flat_predictions)
+micro_recall = recall_score(flat_true_labels, flat_predictions)
+micro_f1 = f1_score(flat_true_labels, flat_predictions)
+print('Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
 
 testFile = args.testFile.split('/')
 testFile = testFile[len(testFile) - 1]  # take the last part
@@ -272,7 +271,6 @@ testFile = testFile[len(testFile) - 1]  # take the last part
 outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.txt'
 file = open(outFile, 'w')
 print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1), file=file)
-print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1), file=file)
 
 print('Saving scores to: ', outFile)
 
