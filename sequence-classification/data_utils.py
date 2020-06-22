@@ -17,12 +17,9 @@ def readData(tokenizer, args, mode):
 
 	df = pd.read_csv(file)
 	df['context'] = df['context'].astype(str)
-	'''
-	# only for debugging
 
-	if mode is "train":
-			df = df[:100]
-	'''
+	# # only for debugging
+	# df = df[:100]
 
 	sentences = df.context.values
 	# sentences = ["[CLS] " + sentence + " [SEP]" for sentence in sentences]

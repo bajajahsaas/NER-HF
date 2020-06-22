@@ -33,13 +33,15 @@ testFile = args.testFile
 
 print('outDir: {0}, modelPath: {1}, testFile: {2}'.format(outDir, modelPath, testFile))
 
-if os.path.exists(outDir):
-    filelist = [f for f in os.listdir(outDir)]
-    for f in filelist:
-        os.remove(os.path.join(outDir, f))
-else:
-    os.makedirs(outDir)
+# if os.path.exists(outDir):
+#     filelist = [f for f in os.listdir(outDir)]
+#     for f in filelist:
+#         os.remove(os.path.join(outDir, f))
+# else:
+#     os.makedirs(outDir)
 
+if not os.path.exists(outDir):
+    os.makedirs(outDir)
 
 device = torch.device("cuda" if (args.gpu and torch.cuda.is_available()) else "cpu")
 print('Device', device)
@@ -108,14 +110,16 @@ flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 flat_true_labels = [item for sublist in true_labels for item in sublist]
 
-micro_precision = precision_score(flat_true_labels, flat_predictions, average="micro")
-micro_recall = recall_score(flat_true_labels, flat_predictions, average="micro")
-micro_f1 = f1_score(flat_true_labels, flat_predictions, average="micro")
+labels = [x for x in range(args.num_labels)]
+
+micro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
+micro_recall = recall_score(flat_true_labels, flat_predictions,  labels=labels, average="micro")
+micro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
 print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
 
-macro_precision = precision_score(flat_true_labels, flat_predictions, average="macro")
-macro_recall = recall_score(flat_true_labels, flat_predictions, average="macro")
-macro_f1 = f1_score(flat_true_labels, flat_predictions, average="macro")
+macro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
+macro_recall = recall_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
+macro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
 print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1))
 
 testFile = args.testFile.split('/')
