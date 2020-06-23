@@ -110,7 +110,7 @@ flat_predictions = [item for sublist in predictions for item in sublist]
 flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 flat_true_labels = [item for sublist in true_labels for item in sublist]
 
-labels = [x for x in range(args.num_labels)]
+labels = [x for x in range(args.num_labels - 1)]    # don't include 'None' class
 
 micro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
 micro_recall = recall_score(flat_true_labels, flat_predictions,  labels=labels, average="micro")

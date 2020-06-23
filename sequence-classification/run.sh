@@ -9,12 +9,12 @@
 #
 #SBATCH --ntasks=1
 
-export DATASET=w2
-export RANDOM_SEQ_LEN=5
+export DATASET=public # w2, public
+export RANDOM_SEQ_LEN=200 # 5, 200
 export BERT_MODEL='/mnt/nfs/work1/696ds-s20/abajaj/nlplab/long-term-context/models/bert-large-cased'
 
-export MODE=all # all, no-address
-export NUM_LABELS=4 # 4, 3
+export MODE=no-address # all, no-address
+export NUM_LABELS=3 # 4, 3
 
 export TRAIN=./data/${MODE}/${DATASET}-classifier-data-train${RANDOM_SEQ_LEN}.csv
 export TEST=./data/${MODE}/${DATASET}-classifier-data-test${RANDOM_SEQ_LEN}.csv
