@@ -57,7 +57,6 @@ tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path, do_lower_case
 
 # testing
 input_ids, labels, attention_masks = readData(tokenizer, args, mode="test")
-
 prediction_inputs = torch.tensor(input_ids)
 prediction_masks = torch.tensor(attention_masks)
 prediction_labels = torch.tensor(labels)
@@ -104,33 +103,36 @@ for batch in prediction_dataloader:
         # iterate over the batch
         csv_output.append((b_input_ids[i], pred_flat[i], labels_flat[i]))
 
-print('Test Accuracy Accuracy: {0:0.4f}'.format((float(eval_accuracy) / float(nb_eval_steps))))
-
-flat_predictions = [item for sublist in predictions for item in sublist]
-flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
-flat_true_labels = [item for sublist in true_labels for item in sublist]
-
-labels = [x for x in range(args.num_labels - 1)]    # don't include 'None' class
-
-micro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
-micro_recall = recall_score(flat_true_labels, flat_predictions,  labels=labels, average="micro")
-micro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
-print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
-
-macro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
-macro_recall = recall_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
-macro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
-print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1))
-
 testFile = args.testFile.split('/')
 testFile = testFile[len(testFile) - 1]  # take the last part
+validLabels = [x for x in labels if str(x) != 'nan']
 
-outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.txt'
-file = open(outFile, 'w')
-print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1), file=file)
-print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1), file=file)
+if len(validLabels) != 0:
+    # otherwise it is inference mode with all candidate phrases (with label = NA)
+    print('Test Accuracy Accuracy: {0:0.4f}'.format((float(eval_accuracy) / float(nb_eval_steps))))
 
-print('Saving scores to: ', outFile)
+    flat_predictions = [item for sublist in predictions for item in sublist]
+    flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
+    flat_true_labels = [item for sublist in true_labels for item in sublist]
+
+    labels = [x for x in range(args.num_labels - 1)]    # don't include 'None' class
+
+    micro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
+    micro_recall = recall_score(flat_true_labels, flat_predictions,  labels=labels, average="micro")
+    micro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="micro")
+    print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1))
+
+    macro_precision = precision_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
+    macro_recall = recall_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
+    macro_f1 = f1_score(flat_true_labels, flat_predictions, labels=labels, average="macro")
+    print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1))
+
+    outFile = outDir + "/" + testFile[:len(testFile) - 4] + '_output.txt'
+    file = open(outFile, 'w')
+    print('Micro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(micro_recall, micro_precision, micro_f1), file=file)
+    print('Macro Test R: {0:0.4f}, P: {1:0.4f}, F1: {2:0.4f}'.format(macro_recall, macro_precision, macro_f1), file=file)
+
+    print('Saving scores to: ', outFile)
 
 testdf = pd.read_csv(args.testFile)
 sentences = testdf['context'].tolist()  # un-tokenized sentences
