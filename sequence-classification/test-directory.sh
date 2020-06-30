@@ -10,8 +10,8 @@
 #
 #SBATCH --ntasks=1
 
-export DATASET=w2  # on which the model is trained
-export RANDOM_SEQ_LEN=5  # phrases choosen for None class
+export DATASET=public  # w2, public: on which the model is trained
+export RANDOM_SEQ_LEN=200  # 5, 200: phrases choosen for None class
 
 export MODE=no-address
 export NUM_LABELS=3
