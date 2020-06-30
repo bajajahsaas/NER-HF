@@ -19,8 +19,8 @@ export NUM_LABELS=3
 export MODEL=./${DATASET}/${MODE}/${RANDOM_SEQ_LEN}/model.pt
 export BERT=bert-large-cased
 
-export TEST_DATA=w2-instabase
-export X_DIST_THRESHOLD=200
+export TEST_DATA=resume # w2-instabase, resume
+export X_DIST_THRESHOLD=100 # 200, 100
 
 export TEST_DIR=../../../Data/${TEST_DATA}/ocr/phrases_${X_DIST_THRESHOLD}_bert
 export OUT_DIR=${TEST_DIR}/outputs
